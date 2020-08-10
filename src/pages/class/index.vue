@@ -1,7 +1,7 @@
 <template>
   <view class="scroll-list">
     <!-- tab列表 -->
-    <scroll-view class="tab-scroll" scroll-x :scroll-left="scrollLeft" enable-flex>
+    <scroll-view class="tab-scroll" scroll-x :scroll-left="scrollLeft" enable-flex bindscroll="bindscroll">
       <block v-for="(item,index) in tabList" :key="index">
         <view :class="[tabIndex==index?'blue':'grey','scroll'+index]" :data-index='index' @tap='swichNav'> {{item}} </view>
       </block>
@@ -51,18 +51,29 @@ swiperTab(e){
   const query = uni.createSelectorQuery();
   query.select(`.scroll${index < current?index:current}`).boundingClientRect();
   query.exec( rect => {
-    textWidth=rect[0].width+10
+    console.log('1');
+    textWidth=rect[0].width+10;
+    console.log('2');
+    if (index == current) return;
+    if (index==0) this.scrollLeft=0;
     if (index < current) {
+      console.log(this.scrollLeft,textWidth);
       // 向右滑动
       if (current>this.tabList.length) return
-      this.scrollLeft+= textWidth
+      this.scrollLeft += textWidth;
     } else {
+      console.log('4');
       // 向左滑动
       if (current<0) return
-      this.scrollLeft-= textWidth
+      this.scrollLeft -= textWidth;
     }
     this.tabIndex=e.detail.current;
   })
+},
+// tab滑动时触发
+bindscroll(e){
+  console.log(e.detail.scrollLeft);
+  this.scrollLeft=e.detail.scrollLeft
 }
 },
 onLoad(){
