@@ -1,7 +1,7 @@
 <template>
   <view class="scroll-list">
     <!-- tab列表 -->
-    <scroll-view class="tab-scroll" scroll-x :scroll-left="scrollLeft" enable-flex bindscroll="bindscroll">
+    <scroll-view class="tab-scroll" scroll-x :scroll-left="scrollLeft" enable-flex @scroll="bindscroll">
       <block v-for="(item,index) in tabList" :key="index">
         <view :class="[tabIndex==index?'blue':'grey','scroll'+index]" :data-index='index' @tap='swichNav'> {{item}} </view>
       </block>
