@@ -1,7 +1,7 @@
 <template>
   <view class="scroll-list">
     <!-- tab列表 -->
-    <scroll-view class="tab-scroll" scroll-x :scroll-left="scrollLeft" enable-flex @scroll="bindscroll">
+    <scroll-view class="tab-scroll" scroll-x scroll-anchoring :scroll-left="scrollLeft" enable-flex @scroll="bindscroll">
       <block v-for="(item,index) in tabList" :key="index">
         <view :class="[tabIndex==index?'blue':'grey','scroll'+index]" :data-index='index' @tap='swichNav'> {{item}} </view>
       </block>
@@ -34,6 +34,7 @@ data() {
     tabList:['全部','关注','今日推荐','热点','热门话题','超话','直播','同城'],//tab列表
     tabIndex:0,
     scrollLeft:0,//滑动列表时滑动tab标签
+    timer:null,
   }
 },
 methods:{
@@ -72,8 +73,12 @@ swiperTab(e){
 },
 // tab滑动时触发
 bindscroll(e){
-  console.log(e.detail.scrollLeft);
-  this.scrollLeft=e.detail.scrollLeft
+  if(this.timer){
+    clearTimeout(this.timer)
+  }
+  this.timer = setTimeout(()=>{
+    this.scrollLeft=e.detail.scrollLeft;
+  },100) 
 }
 },
 onLoad(){
@@ -94,9 +99,19 @@ onLoad(){
 
 <style scoped>
 page{
-  width: 100vw;
+  min-width: 100vw;
 }
-.scroll-list{
+::-webkit-scrollbar {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  color: transparent !important;
+}
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent !important;
 }
 .tab-scroll{
   position: fixed;
@@ -105,9 +120,11 @@ page{
   padding: 30rpx;
   padding-right: 0;
   box-sizing: border-box;
+  border: 1rpx solid transparent;
   overflow: hidden;
   white-space: nowrap;
   font-size: 26rpx;
+  overflow-anchor: none;/* 防止滑动时抖动 */
 }
 .tab-scroll view{
   display: inline-block;
